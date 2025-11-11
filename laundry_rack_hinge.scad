@@ -14,6 +14,11 @@ rod_d        = 14;
 rod_y_offset = 9;
 rod_z_offset = hinge_height/2;  // center of the tall hinge body
 rod_total    = 92;
+sheath_d     = 19;
+sheath_inner_d = 16.4;
+sheath_total = rod_total - 18;
+sheath_overhang = 8.5;
+
 
 $fn = 100;
 
@@ -24,7 +29,16 @@ $fn = 100;
 module rod() {
     translate([0, rod_y_offset, rod_z_offset])
         rotate([0,90,0])
-            cylinder(h = rod_total - disk_d/2, d = rod_d);
+            union() {
+                // Core rod
+                cylinder(h = rod_total, d = rod_d);
+                // Rod sheath
+                difference(){
+                    cylinder(h = sheath_total, d = sheath_d);
+                    translate([0,0,sheath_total-sheath_overhang])
+                        cylinder(h = sheath_overhang, d = sheath_inner_d);
+                }
+            }
 }
 
 module hinge_half() {
